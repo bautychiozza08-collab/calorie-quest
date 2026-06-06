@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Quest</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <header class="hero">
+        <h1>🥗 Calorie Quest</h1>
+        <p class="subtitle">Fuel Your Universe.</p>
+    </header>
+
+    <div class="dashboard">
+
+        <div class="progress-card">
+            <div class="progress-header">
+                🔥 Calorías
+                <span id="calorieText">0 / 2500 kcal</span>
+            </div>
+
+            <div class="progress-track">
+                <div id="calorieBar" class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="progress-card">
+            <div class="progress-header">
+                💪 Proteína
+                <span id="proteinText">0 / 160g</span>
+            </div>
+
+            <div class="progress-track">
+                <div id="proteinBar" class="progress-fill protein"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="universe-grid">
+
+        <div class="universe-card lab-card" onclick="openUniverse('Lab')">
+            <img src="calculator.jpg" alt="Calorie Lab">
+
+            <div class="overlay">
+                <h2>🧬 Calorie Lab</h2>
+
+                <div id="labInfo">
+                    <p>Calculá tus metas personalizadas</p>
+                    <span>Explorar →</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="universe-card" onclick="openUniverse('Desayunos')">
+            <img src="breakfast.jpg" alt="Morning Galaxy">
+
+            <div class="overlay">
+                <h2>☀️ Morning Galaxy</h2>
+                <p>Desayunos y energía para comenzar el día</p>
+                <span>Explorar →</span>
+            </div>
+        </div>
+
+        <div class="universe-card" onclick="openUniverse('Almuerzos')">
+            <img src="lunch.jpg" alt="Energy Core">
+
+            <div class="overlay">
+                <h2>🔥 Energy Core</h2>
+                <p>Almuerzos y comidas principales</p>
+                <span>Explorar →</span>
+            </div>
+        </div>
+
+        <div class="universe-card" onclick="openUniverse('Snacks')">
+            <img src="snacks.jpg" alt="Sweet Zone">
+
+            <div class="overlay">
+                <h2>🍫 Sweet Zone</h2>
+                <p>Snacks, postres y antojos</p>
+                <span>Explorar →</span>
+            </div>
+        </div>
+
+        <div class="universe-card" onclick="openUniverse('Bebidas')">
+            <img src="drinks.jpg" alt="Hydro World">
+
+            <div class="overlay">
+                <h2>💧 Hydro World</h2>
+                <p>Hidratación y bebidas</p>
+                <span>Explorar →</span>
+            </div>
+        </div>
+
+        <div class="universe-card" onclick="openUniverse('Fitness')">
+            <img src="fitness.jpg" alt="Protein Dimension">
+
+            <div class="overlay">
+                <h2>💪 Protein Dimension</h2>
+                <p>Alimentos altos en proteína</p>
+                <span>Explorar →</span>
+            </div>
+        </div>
+
+    </div>
+
+<div class="universe-card progress-card-special" onclick="openUniverse('Progress')">
+    <img src="progress.jpg" alt="Progress Center">
+
+    <div class="overlay">
+        <h2>🏆 Progress Center</h2>
+
+        <div id="progressInfo">
+            <p>Tu evolución diaria</p>
+            <span>Explorar →</span>
+        </div>
+    </div>
+</div>
+
+    <div id="universePage" style="display:none;">
+
+        <button class="back-btn" onclick="closeUniverse()">
+            ← Volver a Universos
+        </button>
+
+        <h2 id="universeTitle"></h2>
+
+        <div id="labPage" style="display:none;">
+
+            <div class="profile-card">
+
+                <h2>🧬 Calorie Lab</h2>
+                <p>Calculá tus objetivos personalizados.</p>
+
+                <select id="gender">
+                    <option value="male">Hombre</option>
+                    <option value="female">Mujer</option>
+                </select>
+
+                <input type="number" id="age" placeholder="Edad">
+
+                <input type="number" id="weight" placeholder="Peso (kg)">
+
+                <input type="number" id="height" placeholder="Altura (cm)">
+
+                <select id="activity">
+                    <option value="1.2">Sedentario</option>
+                    <option value="1.375">Ligero</option>
+                    <option value="1.55">Moderado</option>
+                    <option value="1.725">Muy Activo</option>
+                    <option value="1.9">Atleta</option>
+                </select>
+
+                <select id="goal">
+                    <option value="cut">🔥 Bajar grasa</option>
+                    <option value="maintain">⚖️ Mantener</option>
+                    <option value="bulk">💪 Ganar músculo</option>
+                </select>
+
+                <button onclick="calculateProfile()">
+                    🚀 Calcular Objetivos
+                </button>
+
+            </div>
+
+        </div>
+
+        <div id="foodsContainer"></div>
+
+    </div>
+
+    <div class="card today-card">
+
+        <h2>📋 Hoy comiste</h2>
+
+        <div id="mealList"></div>
+
+        <button onclick="resetDay()">
+            🗑 Reiniciar día
+        </button>
+
+    </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script src="foods.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
