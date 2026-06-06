@@ -594,10 +594,80 @@ function previewFoodImage(event) {
     `;
 }
 
-function addScannedFood() {
-    const selectedName = document.getElementById("scannerFoodSelect").value;
+async function addScannedFood() {
+    const input = document.getElementById("foodImageInput");
 
-    addMeal(selectedName);
+    if (!input || !input.files[0]) {
+        alert("Primero subí o sacá una foto.");
+        return;
+    }
 
-    showToast("📷 Comida agregada desde scanner");
+    showToast("🤖 Analizando comida con IA...");
+
+    const file = input.files[0];
+
+    const base64 = await fileToBase64(file);
+
+    try {
+        const response = await fetch(
+            "https://calorie-quest-ai.vercel.app/api/scan",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    imageBase64: base64,
+                    mimeType: file.type
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Error analizando imagen");
+        }
+
+        const scannedMeal = {
+            emoji: "🤖",
+            name: data.food || "Comida detectada",
+            unit: "estimación IA",
+            calories: Number(data.calories) || 0,
+            protein: Number(data.protein) || 0,
+            quantity: 1
+        };
+
+        meals.push(scannedMeal);
+
+        saveData();
+        renderMeals();
+        updateDashboard();
+
+        showToast(`
+            🤖 ${scannedMeal.name}<br>
+            🔥 ${scannedMeal.calories} kcal<br>
+            💪 ${scannedMeal.protein}g proteína
+        `);
+
+    } catch (error) {
+        console.error(error);
+        showToast("❌ Error con la IA");
+        alert("No se pudo analizar la imagen. Probá con otra foto.");
+    }
+}
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            const result = reader.result;
+            const base64 = result.split(",")[1];
+            resolve(base64);
+        };
+
+        reader.onerror = reject;
+
+        reader.readAsDataURL(file);
+    });
 }
