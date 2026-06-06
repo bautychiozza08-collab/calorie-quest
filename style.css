@@ -560,3 +560,98 @@ box-shadow:
     object-fit: cover;
     object-position: center right;
 }
+button {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #00d4ff, #2563eb);
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 0 18px rgba(0, 212, 255, .45);
+    transition: .25s;
+}
+
+button:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 0 28px rgba(0, 212, 255, .8);
+}
+
+button:active {
+    transform: scale(.96);
+}
+
+.profile-card button,
+.today-card button {
+    margin-top: 12px;
+    margin-right: 8px;
+}
+.progress-track{
+    width:100%;
+    height:22px;
+    background:rgba(255,255,255,.05);
+    border-radius:999px;
+    overflow:hidden;
+    border:1px solid rgba(0,212,255,.25);
+    box-shadow:
+        inset 0 0 12px rgba(0,212,255,.15);
+}
+
+.progress-fill{
+    height:100%;
+    width:0%;
+    border-radius:999px;
+
+    background:
+    linear-gradient(
+        90deg,
+        #00d4ff,
+        #00ffff,
+        #4f46e5
+    );
+
+    box-shadow:
+        0 0 10px #00d4ff,
+        0 0 20px #00d4ff,
+        0 0 35px #00ffff;
+
+    transition:width .8s ease;
+}
+
+.progress-label{
+    text-align:center;
+    font-size:1.1rem;
+    font-weight:700;
+    margin:12px 0;
+    color:#00d4ff;
+    text-shadow:0 0 12px #00d4ff;
+}
+#foodImageInput {
+    width: 100%;
+    padding: 15px;
+    border: 1px dashed rgba(0, 212, 255, .5);
+    border-radius: 18px;
+    background: rgba(0, 212, 255, .08);
+    color: white;
+    margin: 15px 0;
+}
+
+.scanner-preview {
+    width: 100%;
+    max-height: 320px;
+    object-fit: cover;
+    border-radius: 22px;
+    margin: 15px 0;
+    border: 1px solid rgba(0, 212, 255, .35);
+    box-shadow: 0 0 25px rgba(0, 212, 255, .25);
+}
+
+#scannerFoodSelect {
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    background: #111827;
+    color: white;
+    border: 1px solid rgba(0, 212, 255, .35);
+    margin: 12px 0;
+}

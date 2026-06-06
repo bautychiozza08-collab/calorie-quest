@@ -2,6 +2,13 @@ let calorieGoal = 2500;
 let proteinGoal = 160;
 let waterGoal = 2;
 
+let waterToday = Number(localStorage.getItem("waterToday")) || 0;
+let currentWeight = Number(localStorage.getItem("currentWeight")) || 0;
+let goalWeight = Number(localStorage.getItem("goalWeight")) || 0;
+let startWeight = Number(localStorage.getItem("startWeight")) || 0;
+
+let weightHistory = JSON.parse(localStorage.getItem("weightHistory")) || [];
+
 const savedProfile = JSON.parse(localStorage.getItem("profile"));
 
 if (savedProfile) {
@@ -20,6 +27,7 @@ renderFoods(foods);
 renderMeals();
 updateDashboard();
 updateLabCard();
+updateHydroCard();
 
 if (searchInput) {
     searchInput.addEventListener("input", () => {
@@ -173,11 +181,39 @@ function calculateProfile() {
     const height = Number(document.getElementById("height").value);
     const activity = Number(document.getElementById("activity").value);
     const goal = document.getElementById("goal").value;
+    const goalWeightInput = Number(document.getElementById("goalWeight").value);
 
     if (!age || !weight || !height) {
         alert("Completá edad, peso y altura.");
         return;
     }
+
+    currentWeight = weight;
+    goalWeight = goalWeightInput || weight;
+
+if (!startWeight) {
+    startWeight = weight;
+}
+
+localStorage.setItem("currentWeight", currentWeight);
+localStorage.setItem("goalWeight", goalWeight);
+localStorage.setItem("startWeight", startWeight);
+
+if (
+    weightHistory.length === 0 ||
+    weightHistory[weightHistory.length - 1] !== weight
+) {
+    weightHistory.push(weight);
+    localStorage.setItem("weightHistory", JSON.stringify(weightHistory));
+}
+
+    if (!startWeight) {
+        startWeight = weight;
+    }
+
+    localStorage.setItem("currentWeight", currentWeight);
+    localStorage.setItem("goalWeight", goalWeight);
+    localStorage.setItem("startWeight", startWeight);
 
     let bmr;
 
@@ -212,10 +248,10 @@ function calculateProfile() {
     showToast(`
         🎯 Objetivos actualizados<br>
         🔥 ${calorieGoal} kcal<br>
-        💪 ${proteinGoal}g proteína
+        💪 ${proteinGoal}g proteína<br>
+        💧 ${waterGoal}L agua
     `);
 }
-
 function openUniverse(category) {
     const universeGrid = document.querySelector(".universe-grid");
     const universePage = document.getElementById("universePage");
@@ -233,31 +269,102 @@ function openUniverse(category) {
         return;
     }
 
-if (category === "Progress") {
-
-    if (universeTitle) universeTitle.innerText = "🏆 Progress Center";
-
+if (category === "Bebidas") {
+    if (universeTitle) universeTitle.innerText = "💧 Hydro World";
     if (labPage) labPage.style.display = "none";
-
     if (foodsContainer) foodsContainer.style.display = "block";
 
+    renderHydroWorld();
+    return;
+}
+
+if (category === "Progress") {
+
+    if (universeTitle)
+        universeTitle.innerText = "🏆 Progress Center";
+
+    if (labPage)
+        labPage.style.display = "none";
+
+    if (foodsContainer)
+        foodsContainer.style.display = "block";
+
+    let progress = 0;
+
+    if (
+        startWeight &&
+        goalWeight &&
+        startWeight !== goalWeight
+    ) {
+
+        progress =
+            ((startWeight - currentWeight) /
+            (startWeight - goalWeight)) * 100;
+
+        progress =
+            Math.max(
+                0,
+                Math.min(progress, 100)
+            );
+    }
+
+    if (category === "Scanner") {
+    if (universeTitle) universeTitle.innerText = "📷 Food Scanner";
+    if (labPage) labPage.style.display = "none";
+    if (foodsContainer) foodsContainer.style.display = "block";
+
+    renderFoodScanner();
+    return;
+}
+    
     foodsContainer.innerHTML = `
-        <div class="profile-card">
+    <div class="profile-card">
 
-            <h2>🏆 Tu progreso</h2>
+        <h2>🏆 Tu progreso</h2>
 
-            <p>🔥 Calorías objetivo: ${calorieGoal} kcal</p>
-            <p>💪 Proteína objetivo: ${proteinGoal}g</p>
-            <p>💧 Agua objetivo: ${waterGoal}L</p>
+        <p>⚖️ Peso inicial: ${startWeight}kg</p>
+        <p>📍 Peso actual: ${currentWeight}kg</p>
+        <p>🎯 Objetivo: ${goalWeight}kg</p>
 
-            <hr>
-
-            <p>📋 Comidas registradas hoy: ${meals.length}</p>
-            <p>⭐ Nivel actual: 1</p>
-            <p>⚡ XP: ${meals.length * 10} / 100</p>
-
+        <div class="progress-label">
+            📈 ${Math.round(progress)}%
         </div>
-    `;
+
+        <div class="progress-track">
+            <div
+                class="progress-fill"
+                style="width:${progress}%">
+            </div>
+        </div>
+
+        <p style="margin-top:15px; color:#00d4ff; font-weight:700;">
+
+            🚀 ${
+                progress < 25
+                ? "Despegando"
+                : progress < 50
+                ? "Tomando ritmo"
+                : progress < 75
+                ? "Imparable"
+                : "Casi lo lográs"
+            }
+
+        </p>
+
+        <br>
+
+        <h3>📋 Historial</h3>
+
+        ${
+            weightHistory.length
+            ? weightHistory.map(
+                w => `<p>⚖️ ${w}kg</p>`
+            ).join("")
+            : "<p>Todavía no hay historial.</p>"
+        }
+
+    </div>
+`;
 
     return;
 }
@@ -354,4 +461,162 @@ function updateLabCard(){
 
     `;
 
+}
+function addWater(amount) {
+    waterToday += amount;
+
+    if (waterToday < 0) {
+        waterToday = 0;
+    }
+
+    waterToday = Number(waterToday.toFixed(2));
+
+    localStorage.setItem("waterToday", waterToday);
+
+    updateDashboard();
+    showToast(`💧 Agua: ${waterToday}L / ${waterGoal}L`);
+}
+
+function renderHydroWorld() {
+    const percent = Math.min((waterToday / waterGoal) * 100, 100);
+
+    foodsContainer.innerHTML = `
+        <div class="profile-card">
+            <h2>💧 Hydro World</h2>
+            <p>Registrá tu hidratación diaria.</p>
+
+            <h3>${waterToday.toFixed(2)}L / ${waterGoal}L</h3>
+
+            <div class="progress-track">
+                <div class="progress-fill" style="width:${percent}%"></div>
+            </div>
+
+            <br>
+
+            <button onclick="addWater(0.25)">+ 250ml</button>
+            <button onclick="addWater(-0.25)">- 250ml</button>
+        </div>
+    `;
+}
+
+function renderProgressCenter() {
+    let progress = 0;
+
+    if (startWeight && goalWeight && startWeight !== goalWeight) {
+        progress =
+            ((startWeight - currentWeight) / (startWeight - goalWeight)) * 100;
+
+        progress = Math.max(0, Math.min(progress, 100));
+    }
+
+    foodsContainer.innerHTML = `
+        <div class="profile-card">
+            <h2>🏆 Progress Center</h2>
+
+            <p>⚖️ Peso inicial: ${startWeight || "-"}kg</p>
+            <p>📍 Peso actual: ${currentWeight || "-"}kg</p>
+            <p>🎯 Objetivo: ${goalWeight || "-"}kg</p>
+
+            <h3>📈 Progreso: ${Math.round(progress)}%</h3>
+
+            <div class="progress-track">
+                <div class="progress-fill protein" style="width:${progress}%"></div>
+            </div>
+
+            <br>
+
+            <h3>📋 Historial</h3>
+
+            <div class="history">
+                ${
+                    weightHistory.length
+                    ? weightHistory.map(w => `<p>⚖️ ${w}kg</p>`).join("")
+                    : "<p>Todavía no hay historial.</p>"
+                }
+            </div>
+        </div>
+    `;
+}
+function addWater(amount) {
+    waterToday += amount;
+
+    if (waterToday < 0) {
+        waterToday = 0;
+    }
+
+    waterToday = Number(waterToday.toFixed(2));
+
+    localStorage.setItem("waterToday", waterToday);
+
+    renderHydroWorld();
+    updateHydroCard();
+
+    showToast(`💧 Agua: ${waterToday}L / ${waterGoal}L`);
+}
+function updateHydroCard() {
+    const hydroInfo = document.getElementById("hydroInfo");
+
+    if (!hydroInfo) return;
+
+    hydroInfo.innerHTML = `
+        <p>💧 ${waterToday}L / ${waterGoal}L</p>
+        <span>Explorar →</span>
+    `;
+}
+function renderFoodScanner() {
+    foodsContainer.innerHTML = `
+        <div class="profile-card">
+            <h2>📷 Food Scanner</h2>
+            <p>Sacá o subí una foto de tu comida.</p>
+
+            <input 
+                type="file" 
+                id="foodImageInput" 
+                accept="image/*" 
+                capture="environment"
+                onchange="previewFoodImage(event)"
+            >
+
+            <div id="imagePreview"></div>
+
+            <h3>¿Qué comida es?</h3>
+
+            <select id="scannerFoodSelect">
+                ${foods.map(food => `
+                    <option value="${food.name}">
+                        ${food.emoji} ${food.name} - ${food.calories} kcal
+                    </option>
+                `).join("")}
+            </select>
+
+            <button onclick="addScannedFood()">
+                ➕ Agregar comida detectada
+            </button>
+        </div>
+    `;
+}
+
+function previewFoodImage(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById("imagePreview");
+
+    if (!file) return;
+
+    const imageUrl = URL.createObjectURL(file);
+
+    preview.innerHTML = `
+        <img 
+            src="${imageUrl}" 
+            class="scanner-preview"
+            alt="Comida escaneada"
+        >
+    `;
+}
+
+function addScannedFood() {
+    const selectedName = document.getElementById("scannerFoodSelect").value;
+
+    addMeal(selectedName);
+
+    showToast("📷 Comida agregada desde scanner");
 }

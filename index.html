@@ -88,14 +88,17 @@
         </div>
 
         <div class="universe-card" onclick="openUniverse('Bebidas')">
-            <img src="drinks.jpg" alt="Hydro World">
+    <img src="drinks.jpg" alt="Hydro World">
 
-            <div class="overlay">
-                <h2>💧 Hydro World</h2>
-                <p>Hidratación y bebidas</p>
-                <span>Explorar →</span>
-            </div>
+    <div class="overlay">
+        <h2>💧 Hydro World</h2>
+
+        <div id="hydroInfo">
+            <p>Hidratación y bebidas</p>
+            <span>Explorar →</span>
         </div>
+    </div>
+</div>
 
         <div class="universe-card" onclick="openUniverse('Fitness')">
             <img src="fitness.jpg" alt="Protein Dimension">
@@ -119,6 +122,16 @@
             <p>Tu evolución diaria</p>
             <span>Explorar →</span>
         </div>
+    </div>
+</div>
+
+<div class="universe-card" onclick="openUniverse('Scanner')">
+    <img src="scanner.jpg" alt="Food Scanner">
+
+    <div class="overlay">
+        <h2>📷 Food Scanner</h2>
+        <p>Subí una foto y registrá tu comida</p>
+        <span>Explorar →</span>
     </div>
 </div>
 
@@ -147,6 +160,9 @@
                 <input type="number" id="weight" placeholder="Peso (kg)">
 
                 <input type="number" id="height" placeholder="Altura (cm)">
+
+                <input type="number" id="goalWeight" placeholder="Peso objetivo (kg)">
+                
 
                 <select id="activity">
                     <option value="1.2">Sedentario</option>
