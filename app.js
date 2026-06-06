@@ -269,104 +269,85 @@ function openUniverse(category) {
         return;
     }
 
-if (category === "Bebidas") {
-    if (universeTitle) universeTitle.innerText = "💧 Hydro World";
-    if (labPage) labPage.style.display = "none";
-    if (foodsContainer) foodsContainer.style.display = "block";
+    if (category === "Bebidas") {
+        if (universeTitle) universeTitle.innerText = "💧 Hydro World";
+        if (labPage) labPage.style.display = "none";
+        if (foodsContainer) foodsContainer.style.display = "block";
 
-    renderHydroWorld();
-    return;
-}
-
-if (category === "Progress") {
-
-    if (universeTitle)
-        universeTitle.innerText = "🏆 Progress Center";
-
-    if (labPage)
-        labPage.style.display = "none";
-
-    if (foodsContainer)
-        foodsContainer.style.display = "block";
-
-    let progress = 0;
-
-    if (
-        startWeight &&
-        goalWeight &&
-        startWeight !== goalWeight
-    ) {
-
-        progress =
-            ((startWeight - currentWeight) /
-            (startWeight - goalWeight)) * 100;
-
-        progress =
-            Math.max(
-                0,
-                Math.min(progress, 100)
-            );
+        renderHydroWorld();
+        return;
     }
 
     if (category === "Scanner") {
-    if (universeTitle) universeTitle.innerText = "📷 Food Scanner";
+        if (universeTitle) universeTitle.innerText = "📷 Food Scanner";
+        if (labPage) labPage.style.display = "none";
+        if (foodsContainer) foodsContainer.style.display = "block";
+
+        renderFoodScanner();
+        return;
+    }
+
+    if (category === "Progress") {
+        if (universeTitle) universeTitle.innerText = "🏆 Progress Center";
+        if (labPage) labPage.style.display = "none";
+        if (foodsContainer) foodsContainer.style.display = "block";
+
+        let progress = 0;
+
+        if (startWeight && goalWeight && startWeight !== goalWeight) {
+            progress =
+                ((startWeight - currentWeight) /
+                (startWeight - goalWeight)) * 100;
+
+            progress = Math.max(0, Math.min(progress, 100));
+        }
+
+        foodsContainer.innerHTML = `
+            <div class="profile-card">
+
+                <h2>🏆 Tu progreso</h2>
+
+                <p>⚖️ Peso inicial: ${startWeight}kg</p>
+                <p>📍 Peso actual: ${currentWeight}kg</p>
+                <p>🎯 Objetivo: ${goalWeight}kg</p>
+
+                <div class="progress-label">
+                    📈 ${Math.round(progress)}%
+                </div>
+
+                <div class="progress-track">
+                    <div
+                        class="progress-fill"
+                        style="width:${progress}%">
+                    </div>
+                </div>
+
+                <br>
+
+                <h3>📋 Historial</h3>
+
+                ${
+                    weightHistory.length
+                    ? weightHistory.map(w => `<p>⚖️ ${w}kg</p>`).join("")
+                    : "<p>Todavía no hay historial.</p>"
+                }
+
+            </div>
+        `;
+
+        return;
+    }
+
     if (labPage) labPage.style.display = "none";
     if (foodsContainer) foodsContainer.style.display = "block";
 
-    renderFoodScanner();
-    return;
-}
-    
-    foodsContainer.innerHTML = `
-    <div class="profile-card">
+    if (universeTitle) {
+        universeTitle.innerText = getUniverseName(category);
+    }
 
-        <h2>🏆 Tu progreso</h2>
+    const filtered = foods.filter(food => food.category === category);
 
-        <p>⚖️ Peso inicial: ${startWeight}kg</p>
-        <p>📍 Peso actual: ${currentWeight}kg</p>
-        <p>🎯 Objetivo: ${goalWeight}kg</p>
-
-        <div class="progress-label">
-            📈 ${Math.round(progress)}%
-        </div>
-
-        <div class="progress-track">
-            <div
-                class="progress-fill"
-                style="width:${progress}%">
-            </div>
-        </div>
-
-        <p style="margin-top:15px; color:#00d4ff; font-weight:700;">
-
-            🚀 ${
-                progress < 25
-                ? "Despegando"
-                : progress < 50
-                ? "Tomando ritmo"
-                : progress < 75
-                ? "Imparable"
-                : "Casi lo lográs"
-            }
-
-        </p>
-
-        <br>
-
-        <h3>📋 Historial</h3>
-
-        ${
-            weightHistory.length
-            ? weightHistory.map(
-                w => `<p>⚖️ ${w}kg</p>`
-            ).join("")
-            : "<p>Todavía no hay historial.</p>"
-        }
-
-    </div>
-`;
-
-    return;
+    renderFoods(filtered);
 }
 
     if (labPage) labPage.style.display = "none";
@@ -376,7 +357,7 @@ if (category === "Progress") {
 
     const filtered = foods.filter(food => food.category === category);
     renderFoods(filtered);
-}
+
 
 function closeUniverse() {
     const universeGrid = document.querySelector(".universe-grid");
